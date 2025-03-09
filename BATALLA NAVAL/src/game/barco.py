@@ -13,24 +13,22 @@ class Barco:
         self.puntos = self.TIPOS[tipo]["puntos"]
         self.posiciones = []
         self.hundido = False
-        self.orientacion = None
         self.impactos_recibidos = 0
 
-    def esHundido(self) -> bool:
-        return self.hundido
-
     def agregarPosicion(self, x: int, y: int, orientacion: str):
-        self.orientacion = orientacion
+        if orientacion not in ["horizontal", "vertical"]:
+            raise ValueError("Orientación inválida")
+            
+        self.posiciones = []
         if orientacion == "horizontal":
             self.posiciones.extend([(x, y + i) for i in range(self.tamaño)])
-        else:  # vertical
+        elif orientacion == "vertical":
             self.posiciones.extend([(x + i, y) for i in range(self.tamaño)])
 
     def recibirImpacto(self, x: int, y: int) -> bool:
         if (x, y) in self.posiciones:
-            self.posiciones.remove((x, y))
             self.impactos_recibidos += 1
-            self.hundido = len(self.posiciones) == 0
+            self.hundido = self.impactos_recibidos >= self.tamaño
             return True
         return False
 
